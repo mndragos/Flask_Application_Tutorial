@@ -6,5 +6,8 @@
     "python.formatting.provider": "black",
     "editor.formatOnSave": true,
     "editor.wordWrapColumn": 88,
-    "python.linting.flake8Args": ["--max-line-length=88"]
+    "python.linting.flake8Args": [
+        "--max-line-length=88"
+    ],
+    "restructuredtext.confPath": ""
 }
