@@ -9,6 +9,8 @@ readme = "README.rst"
 [tool.poetry.dependencies]
 python = "^3.7"
 flask = "^1.1.2"
+D = "^0.2.2"
+docutils = "^0.16"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
