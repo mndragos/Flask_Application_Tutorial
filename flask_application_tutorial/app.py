@@ -72,9 +72,22 @@ class RegisterForm(Form):
 def register():
     form = RegisterForm(request.form)
     if request.method == "POST" and form.validate():
-        pass
+        name = form.name.data
+        email = form.email.data
+        username = form.username.data
+        password = sha256_crypt.encrypt(str(form.password.data))
+        # create cursor
+        cur = get_db().cursor()
+        cur.execute(
+            "INSERT INTO users(name, email, username, password) VALUES(:name, :email, :username, :password)",
+            (name, email, username, password),
+        )
+        flash("You are now registered and log in", "succes")
+        redirect(url_for("index"))
+
     return render_template("register.html", form=form)
 
 
 if __name__ == "__main__":
+    app.secret_key = "secret123"
     app.run(debug=True)
