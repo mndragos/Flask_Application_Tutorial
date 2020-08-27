@@ -82,8 +82,14 @@ def register():
             "INSERT INTO users(name, email, username, password) VALUES(:name, :email, :username, :password)",
             (name, email, username, password),
         )
-        flash("You are now registered and log in", "succes")
-        redirect(url_for("index"))
+        # commit to DB
+        get_db().commit()
+        # close connection
+        close_connection("exception")
+        # flash message
+        flash("You are now registered and can log in", "success")
+
+        return redirect(url_for("login"))
 
     return render_template("register.html", form=form)
 
