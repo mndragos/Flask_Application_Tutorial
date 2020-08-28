@@ -76,22 +76,72 @@ def register():
         email = form.email.data
         username = form.username.data
         password = sha256_crypt.encrypt(str(form.password.data))
-        # create cursor
-        cur = get_db().cursor()
-        cur.execute(
-            "INSERT INTO users(name, email, username, password) VALUES(:name, :email, :username, :password)",
-            (name, email, username, password),
-        )
-        # commit to DB
-        get_db().commit()
-        # close connection
+
+        # connects to DB
+        con = get_db()
+
+        # Successful, con.commit() is called automatically afterwards
+        with con:
+            con.execute(
+                "INSERT INTO users(name, email, username, password) VALUES(:name, :email, :username, :password)",
+                (name, email, username, password),
+            )
+
+        # close connection.
         close_connection("exception")
-        # flash message
+
+        # flash message.
         flash("You are now registered and can log in", "success")
 
         return redirect(url_for("login"))
 
     return render_template("register.html", form=form)
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        # get form fields
+        username = request.form["username"]
+        password_candidate = request.form["password"]
+
+        # connect to DB
+        conn = get_db()
+
+        # return db row instead of tuples
+        conn.row_factory = sqlite3.Row
+
+        # create a db cursor
+        cur = conn.cursor()
+
+        try:
+            # get user by username
+            cur.execute("SELECT * FROM users WHERE username = :username", [username])
+
+            # get the stored hash
+            result = cur.fetchone()
+            password = result["password"]
+
+            # close connection
+            conn.close()
+
+            # compare passwords
+            if sha256_crypt.verify(password_candidate, password):
+                # user exists in DB and password verified - OK.
+                session["logged_in"] = True
+                session["username"] = username
+
+                flash("You are nou logged in", "success")
+                return redirect(url_for("dashboard"))
+            else:
+                # user exists in DB but password do not match.
+                flash("Invalid login", "danger")
+                return render_template("login.html")
+        except TypeError:
+            flash("User not found", "danger")
+            return render_template("login.html")
+
+    return render_template("login.html")
 
 
 if __name__ == "__main__":
