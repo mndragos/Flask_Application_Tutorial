@@ -144,6 +144,14 @@ def login():
     return render_template("login.html")
 
 
+# logout route
+@app.route("/logout")
+def logout():
+    session.clear()
+    flash("You are now logged out", "info")
+    return redirect(url_for("login"))
+
+
 @app.route("/dashboard")
 def dashboard():
     return render_template("dashboard.html")
