@@ -6,5 +6,6 @@ I am following the youtube tutorial 'Python Flask From Scratch' from 'Traversy M
 
 ( https://www.youtube.com/playlist?list=PLillGF-RfqbbbPz6GSEM9hLQObuQjNoj_ )
 
-The Application is build with Python and Flask and will contain 3 pages: home, about, articles.
-The home page will hold a login and register form.
+* The Application is build with Python and Flask and  contains 3 pages: home, about, articles.
+* It supports a register page, a login page and is using python's sqlite3 as database (the tutorial implements SQL database).
+* Every action that includes register, login and logout is supported by integrated flash messages. 
