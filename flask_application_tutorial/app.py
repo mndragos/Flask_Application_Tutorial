@@ -9,10 +9,11 @@ from flask import (
     session,
     logging,
 )
-from data import articles
+from functools import wraps
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from passlib.hash import sha256_crypt
 import sqlite3
+from data import articles
 
 app = Flask(__name__)
 
@@ -144,6 +145,19 @@ def login():
     return render_template("login.html")
 
 
+# Checked if user loged in
+def is_logged_in(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if "logged_in" in session:
+            return f(*args, **kwargs)
+        else:
+            flash("Unauthorized, please login.", "danger")
+            return redirect(url_for("login"))
+
+    return wrap
+
+
 # logout route
 @app.route("/logout")
 def logout():
@@ -152,7 +166,9 @@ def logout():
     return redirect(url_for("login"))
 
 
+# dashboard
 @app.route("/dashboard")
+@is_logged_in
 def dashboard():
     return render_template("dashboard.html")
 
