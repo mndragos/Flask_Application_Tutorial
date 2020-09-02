@@ -11,6 +11,7 @@ instance/*
 __pycache__/
 *.py[cod]
 *$py.class
+mynotes.txt
 
 # C extensions
 *.so
