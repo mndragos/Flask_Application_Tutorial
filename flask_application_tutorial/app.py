@@ -302,6 +302,30 @@ def edit_article(id):
     return render_template("edit_article.html", form=form)
 
 
+# delete article
+@app.route("/delete_article/<string:id>", methods=["POST"])
+@is_logged_in
+def delete_article(id):
+    # open connection
+    con = get_db()
+
+    # return db dicts instead of tuples
+    con.row_factory = make_dicts
+
+    # create cursor
+    cur = con.cursor()
+
+    with con:
+        # return article to delete
+        cur.execute("DELETE FROM articles WHERE id=:id", [id])
+
+    # close DB
+    close_connection()
+
+    flash("Article deleted", "success")
+    return redirect(url_for("dashboard"))
+
+
 if __name__ == "__main__":
     app.secret_key = "secret123"
     app.run(debug=True)
