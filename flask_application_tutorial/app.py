@@ -202,6 +202,7 @@ def logout():
 @app.route("/dashboard")
 @is_logged_in
 def dashboard():
+    username = session["username"]
     # open connection
     con = get_db()
 
@@ -212,7 +213,9 @@ def dashboard():
     cur = con.cursor()
 
     # return articles
-    articles = cur.execute("SELECT * FROM articles").fetchall()
+    articles = cur.execute(
+        "SELECT * FROM articles WHERE author=:username", [username]
+    ).fetchall()
 
     if not articles:
         flash("No articles found", "danger")
