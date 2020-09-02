@@ -28,6 +28,10 @@ def get_db():
     return db
 
 
+def make_dicts(cursor, row):
+    return dict((cursor.description[idx][0], value) for idx, value in enumerate(row))
+
+
 @app.teardown_appcontext
 def close_connection(exception):
     db = getattr(g, "_database", None)
@@ -47,12 +51,42 @@ def about():
 
 @app.route("/articles")
 def articles():
-    return render_template("articles.html", articles=Articles)
+    # open connection
+    con = get_db()
+
+    # return db row instead of tuples
+    con.row_factory = make_dicts
+
+    # create cursor
+    cur = con.cursor()
+
+    # return articles
+    articles = cur.execute("SELECT * FROM articles").fetchall()
+
+    if not articles:
+        flash("No articles found", "danger")
+        return render_template("articles.html")
+    else:
+        return render_template("articles.html", articles=articles)
+
+    # close connection
+    con.close()
 
 
 @app.route("/article/<string:id>/")
 def article(id):
-    return render_template("article.html", id=id)
+    # open connection
+    con = get_db()
+
+    # return db row instead of tuples
+    con.row_factory = make_dicts
+
+    # create cursor
+    cur = con.cursor()
+
+    # return articles
+    article = cur.execute("SELECT * FROM articles WHERE id = :id", [id]).fetchone()
+    return render_template("article.html", article=article)
 
 
 class RegisterForm(Form):
@@ -171,7 +205,26 @@ def logout():
 @app.route("/dashboard")
 @is_logged_in
 def dashboard():
-    return render_template("dashboard.html")
+    # open connection
+    con = get_db()
+
+    # return db row instead of tuples
+    con.row_factory = make_dicts
+
+    # create cursor
+    cur = con.cursor()
+
+    # return articles
+    articles = cur.execute("SELECT * FROM articles").fetchall()
+
+    if not articles:
+        flash("No articles found", "danger")
+        return render_template("dashboard.html")
+    else:
+        return render_template("dashboard.html", articles=articles)
+
+    # close connection
+    con.close()
 
 
 # article form class
