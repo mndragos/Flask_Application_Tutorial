@@ -4,6 +4,14 @@ import sqlite3
 # connect to database
 conn = sqlite3.connect("userdata.db")
 
+
+def make_dicts(cursor, row):
+    return dict((cursor.description[idx][0], value) for idx, value in enumerate(row))
+
+
+# create rows
+conn.row_factory = make_dicts
+
 # create a cursor
 c = conn.cursor()
 
@@ -20,7 +28,7 @@ c = conn.cursor()
 # """
 # )
 
-# # # create a table for articles
+# # # # create a table for articles
 # c.execute(
 #     """ CREATE TABLE articles(
 #     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -33,12 +41,14 @@ c = conn.cursor()
 # )
 
 # commit changes
-conn.commit()
+# conn.commit()
 
 # c.execute("SELECT * FROM users")
 c.execute("SELECT * FROM articles")
+rez = c.fetchall()
 
-print(c.fetchall())
+for row in range(len(rez)):
+    print(rez[row]["id"], rez[row]["title"], rez[row]["author"])
 
 # allways close connection
 conn.close()
