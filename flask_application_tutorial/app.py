@@ -7,18 +7,15 @@ from flask import (
     request,
     url_for,
     session,
-    logging,
 )
 from functools import wraps
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from passlib.hash import sha256_crypt
 import sqlite3
-from data import articles
 
 app = Flask(__name__)
 
 DATABASE = "userdata.db"
-Articles = articles()
 
 
 def get_db():
