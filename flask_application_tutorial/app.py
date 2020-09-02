@@ -30,7 +30,7 @@ def make_dicts(cursor, row):
 
 
 @app.teardown_appcontext
-def close_connection(exception):
+def close_connection(exception=None):
     db = getattr(g, "_database", None)
     if db is not None:
         db.close()
@@ -230,7 +230,7 @@ class ArticleForm(Form):
     body = TextAreaField("Body", [validators.Length(min=30)])
 
 
-# articles
+# add articles
 @app.route("/add_article", methods=["GET", "POST"])
 @is_logged_in
 def add_article():
@@ -254,6 +254,52 @@ def add_article():
 
         return redirect(url_for("dashboard"))
     return render_template("add_article.html", form=form)
+
+
+# edit articles
+@app.route("/edit_article/<string:id>", methods=["GET", "POST"])
+@is_logged_in
+def edit_article(id):
+    # open connection
+    con = get_db()
+
+    # return db dicts instead of tuples
+    con.row_factory = make_dicts
+
+    # create cursor
+    cur = con.cursor()
+
+    # return article to edit
+    article = cur.execute("SELECT * FROM articles WHERE id = :id", [id]).fetchone()
+
+    # get article form
+    form = ArticleForm(request.form)
+
+    # populate article form fields
+    form.title.data = article["title"]
+    form.body.data = article["body"]
+
+    if request.method == "POST" and form.validate():
+        title = request.form["title"]
+        body = request.form["body"]
+
+        # open connection to DB
+        con = get_db()
+
+        # update article fields
+        with con:
+            con.execute(
+                "UPDATE articles SET title=:title, body=:body WHERE id=:id",
+                [title, body, id],
+            )
+
+        # close connection
+        close_connection()
+
+        # flash message
+        flash("Article updated", "success")
+        return redirect(url_for("dashboard"))
+    return render_template("edit_article.html", form=form)
 
 
 if __name__ == "__main__":
