@@ -6,7 +6,7 @@
    
     {% for article in articles %}
         <li class="list-group-item">
-            <a href="article/{{article.id}}">{{article.title}}</a>
+            <a href="{{url_for("articles.article", id=article.id)}}">{{article.title}}</a>
         </li>
     {% endfor %}
 </ul>

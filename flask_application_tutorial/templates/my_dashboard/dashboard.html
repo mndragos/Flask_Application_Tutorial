@@ -2,7 +2,7 @@
 
 {% block body %}
   <h1>Dashboard <small>Welcome {{session.username}}</small></h1>
-  <a class="btn btn-success" href="/add_article">Add Article</a>
+  <a class="btn btn-success" href="{{ url_for('my_dashboard.add_article')}}">Add Article</a>
   <hr>
   <table class="table table-striped" >
     <tr>
@@ -19,9 +19,9 @@
         <td>{{article["title"]}}</td>
         <td>{{article["author"]}}</td>
         <td>{{article["create_date"]}}</td>
-        <td><a href="edit_article/{{article["id"]}}" class="btn btn-default pull-right" >EDIT</a></td>
+        <td><a href="{{ url_for("my_dashboard.edit_article", id=article.id) }}" class="btn btn-default pull-right" >EDIT</a></td>
         <td>
-          <form action="{{url_for("delete_article", id=article.id)}}" method="POST">
+          <form action="{{ url_for("my_dashboard.delete_article", id=article.id) }}" method="POST">
             <input type="hidden" name="_method" value="DELETE">
             <input type="submit" value="Delete" class="btn btn-danger">
           </form>
