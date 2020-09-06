@@ -105,3 +105,14 @@ def delete_article(id):
 
     flash("Article deleted", "success")
     return redirect(url_for("my_dashboard.dashboard"))
+
+
+def articles_count():
+    username = session["username"]
+    con = get_db
+    with con:
+        con.execute(
+            "SELECT * FROM articles WHERE author=:username", [username]
+        ).rowcount
+        article_count = con.fetchall()
+    return article_count
