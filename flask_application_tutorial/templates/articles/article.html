@@ -3,6 +3,7 @@
 {% block body %}
 <h1>{{article['title']}}</h1>
 <small>Written by {{article.author}} on {{article.create_date}}</small>
+<a href="{{ url_for("my_dashboard.dashboard", id=article.id) }}" class="btn btn-default pull-right" >BACK</a>
 <hr>
 <div>
     {{article.body | safe}}
