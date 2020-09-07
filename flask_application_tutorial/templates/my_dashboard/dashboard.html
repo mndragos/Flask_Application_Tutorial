@@ -12,6 +12,7 @@
       <th scope="col">Date</th>
       <th scope="col"></th>
       <th scope="col"></th>
+      <th scope="col"></th>
     </tr>
     {% for article in articles %}
       <tr>
@@ -19,11 +20,12 @@
         <td>{{article["title"]}}</td>
         <td>{{article["author"]}}</td>
         <td>{{article["create_date"]}}</td>
+        <td><a href="{{url_for("articles.article", id=article.id)}}" class="btn btn-default pull-right" >VIEW</a></td>
         <td><a href="{{ url_for("my_dashboard.edit_article", id=article.id) }}" class="btn btn-default pull-right" >EDIT</a></td>
         <td>
           <form action="{{ url_for("my_dashboard.delete_article", id=article.id) }}" method="POST">
             <input type="hidden" name="_method" value="DELETE">
-            <input type="submit" value="Delete" class="btn btn-danger">
+            <input type="submit" value="Delete" class="btn btn-danger pull-right">
           </form>
         </td>
       </tr>
