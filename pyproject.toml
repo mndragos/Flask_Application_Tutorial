@@ -13,6 +13,7 @@ D = "^0.2.2"
 docutils = "^0.16"
 FLASK-WTF = "^0.14.3"
 passlib = "^1.7.2"
+python-dotenv = "^0.14.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
